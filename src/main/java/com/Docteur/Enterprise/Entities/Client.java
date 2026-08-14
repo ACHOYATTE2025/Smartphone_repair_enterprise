@@ -3,7 +3,6 @@ package com.Docteur.Enterprise.Entities;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,12 +41,9 @@ public class Client {
 
     private LocalDateTime clientCreated;
 
-    // ✅ UN client → PLUSIEURS employees
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.ALL)
-    private Set<Employee> employees;
-
+   
     // ✅ UN client → PLUSIEURS produits/téléphones
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.ALL)
-    private Set<Product> products;  // ✅ PLURIEL + Collection
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<RepairFolder> repairFolders;  // ✅ PLURIEL + Collection
 
 }

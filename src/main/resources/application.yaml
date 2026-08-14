@@ -7,6 +7,10 @@ server:
     min-response-size: 128
   servlet:
     context-path: /api/enterprise/v1  
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 5MB
 
 spring:
   application:

@@ -127,11 +127,11 @@ public class ClientService {
             Employee usex = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                    
             if(notEmpty)
-                {Client  client = this.clientRepository.findByNumberClient(num);
+                {Optional<Client>  client = this.clientRepository.findByNumberClient(num);
                     if(client==null){throw new RuntimeException("Client doesn't exist");}
                 
-                log.info("Client Found successfully )"+ client.getEmail());
-                return this.clientRepository.findByNumberClientAndEmployees(num, usex)
+                log.info("Client Found successfully )"+ client.get().getEmail());
+                return this.clientRepository.findByNumberClient(num)
                     .stream()
                     .map(clientMapperDto);
                 }

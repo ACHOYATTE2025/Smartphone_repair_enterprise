@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,24 +37,14 @@ public class RepairFolder {
     @Column(unique = true, nullable = false)
     private String repairNumber;// unique number of repair folder
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name= "productId")
-    private Product product;
-
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
+      
     private LocalDateTime receptionDate;
 
     private String detailsClientIssue;// issue of smartphone from clients
 
     private String diagnosticTetch;// issue diagnostic form technician
 
-    @ManyToOne(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "status_id")
-    private StatusFolder  status;//diffents kind of product status
-
+   
     @Column(precision=10,scale=2)//ten numbers and 2 after comma
     private BigDecimal price;// repair price
 
@@ -69,5 +61,27 @@ public class RepairFolder {
     private LocalDate archiveDate;// date of archived
 
     private String notes;
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name= "productId")
+    private Product product;
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    @ManyToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(name = "status_id")
+    private StatusFolder  status;//diffents kind of product status
+
+    @OneToMany(fetch=FetchType.EAGER)
+    private Set<Bill> bill;
+
+
+
 
 }

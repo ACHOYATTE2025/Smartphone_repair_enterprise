@@ -29,19 +29,27 @@ import lombok.extern.slf4j.Slf4j;
 
 
 
+
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 
 @Tag(
-  name = "Cient Controller",
+  name = "Client Controller",
   description="Controller REST Api for  details"
 )
 public class ClientController {
 
     private final ClientService clientService;
+   
 
-
+/********************************************************************************************************************
+*
+*                                                     CLIENT BLOCK
+*
+*
+***********************************************************************************************************************/
 
 
 
@@ -111,10 +119,20 @@ public Stream<ResponseClientDto> searchClient(@RequestParam(required = false)  S
     description = "REST API to get Client By Id"
   )
 @GetMapping(path="/clientsearchbyid/{id}")
-Optional<ResponseClientDto> searchClientbyId(@Valid @RequestParam(required = true)Long id ){
+Optional<ResponseClientDto> searchClientbyId(@Valid @PathVariable(required = true)Long id ){
   Optional<ResponseClientDto> bix = this.clientService.ReadClientById(id);
   log.info("client fetch by id N° "+ bix.get().getPhoneNumber());
   return bix;
 }
+
+
+
+
+
+
+
+
+
+
 
 } 

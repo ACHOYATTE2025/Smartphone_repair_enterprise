@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import com.Docteur.Enterprise.Entities.RepairFolder;
 
 @Repository
-public interface RepairFolderRepository extends  JpaRepository<RepairFolder, Long> {
+public interface FolderRepository extends  JpaRepository<RepairFolder, Long> {
+
+    
+    
 
 }
