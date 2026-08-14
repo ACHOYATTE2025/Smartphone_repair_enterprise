@@ -3,7 +3,9 @@ package com.Docteur.Enterprise.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +47,7 @@ public class ProductController {
         description = "Register a new smartphone product with optional image. Use multipart/form-data to upload."
     )
     @PostMapping(
-        value = "/register",
+        value = "/registerproducts",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -54,12 +56,12 @@ public class ProductController {
                                                         @RequestParam("serie") String serie,
                                                         @RequestParam("imei") String imei,
                                                         @RequestParam("productType") ProductType productType,
-                                                        @RequestParam("clientId") Long clientId,
+                                                        @RequestParam("RepairFolderId") Long RepairFolderId,
                                                         @RequestParam(value = "image", required = false) MultipartFile image)
                                                          {
  
         try {
-            log.info("Registering product - Brand: {}, IMEI: {}, ClientId: {}", brand, imei, clientId);
+            log.info("Registering product - Brand: {}, IMEI: {}, ClientId: {}", brand, imei, RepairFolderId);
  
             // ✅ Create ProductDto from request parameters
             ProductDto productDto = ProductDto.builder()
@@ -67,7 +69,7 @@ public class ProductController {
                     .serie(serie)
                     .imei(imei)
                     .productType(productType)
-                    .clientId(clientId)
+                    .repairFolderId(RepairFolderId)
                     .image(image)
                     .build();
  
@@ -99,6 +101,73 @@ public class ProductController {
         }
     }
  
+
+
+
+
+
+    /********************************************************************************************************************
+     *                                       PRODUCT UPDATE WITH OPTIONAL IMAGE
+     ********************************************************************************************************************/
+
+    @Operation(
+        summary = "Update an existing product with optional new image",
+        description = "Update smartphone details and optionally replace its image. Use multipart/form-data to upload."
+    )
+    @PutMapping(
+        value = "/updateproducts/{id}",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ResponseDto> updateProduct(
+                                                    @PathVariable("id") Long id,
+                                                    @RequestParam(value = "brand", required = false) String brand,
+                                                    @RequestParam(value = "serie", required = false) String serie,
+                                                    @RequestParam(value = "imei", required = false) String imei,
+                                                    @RequestParam(value = "productType", required = false) ProductType productType,
+                                                    @RequestParam(value = "RepairFolderId", required = false) Long repairFolderId,
+                                                    @RequestParam(value = "image", required = false) MultipartFile image) {
+
+        try {
+            log.info("Updating product ID: {} - Brand: {}, IMEI: {}", id, brand, imei);
+
+            // ✅ Reconstruction du ProductDto avec l'ID du produit à modifier
+            ProductDto productDto = ProductDto.builder()
+                    .brand(brand)
+                    .serie(serie)
+                    .imei(imei)
+                    .productType(productType)
+                    .repairFolderId(repairFolderId)
+                    .image(image)
+                    .build();
+
+            // ✅ Appel du service de mise à jour
+            Product updatedProduct = productService.updateProduct(id, productDto);
+
+            log.info("Product updated successfully for ID: {}", updatedProduct.getId());
+
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseDto(
+                            200,
+                            "Product updated successfully",
+                            "Product ID: " + updatedProduct.getId()
+                    ));
+
+        } catch (IllegalArgumentException e) {
+            log.warn("Validation error during update: {}", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDto(400, "Validation Failed", e.getMessage()));
+
+        } catch (Exception e) {
+            log.error("Error updating product ID {}: {}", id, e.getMessage(), e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(500, "Server Error", "Failed to update product"));
+        }
+    }
     
 
 }

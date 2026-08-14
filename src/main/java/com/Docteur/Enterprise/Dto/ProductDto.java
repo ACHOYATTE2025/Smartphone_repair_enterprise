@@ -37,7 +37,7 @@ public class ProductDto {
  
     @NotNull(message = "Client ID cannot be null")
     @Schema(description = "Client ID who owns the product", example = "1")
-    private Long clientId; // ✅ Reference to Client
+    private Long repairFolderId; // ✅ Reference to Client
 
 
 }
